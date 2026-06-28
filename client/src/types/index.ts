@@ -1,0 +1,262 @@
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message: string;
+}
+
+export interface User {
+  id: number;
+  email: string;
+  name: string;
+}
+
+// ── Hero ────────────────────────────────────────────────────────────────────
+
+export interface TrustStat {
+  value: string;
+  label: string;
+}
+
+export interface HeroSection {
+  id: number;
+  eyebrow: string;
+  headline: string;
+  rotatingItems: string[];
+  bodyText: string;
+  cta1Label: string;
+  cta1Href: string;
+  cta2Label: string;
+  cta2Href: string;
+  videoUrl?: string;
+  videoPoster?: string;
+  trustStats: TrustStat[];
+  updatedAt: string;
+}
+
+// ── Logo ────────────────────────────────────────────────────────────────────
+
+export interface Logo {
+  id: number;
+  name: string;
+  imageUrl?: string;
+  order: number;
+  visible: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── About ───────────────────────────────────────────────────────────────────
+
+export interface AboutStat {
+  value: string;
+  label: string;
+}
+
+export interface AboutPillar {
+  title: string;
+  description: string;
+}
+
+export interface AboutSection {
+  id: number;
+  headline: string;
+  bodyText: string;
+  imageUrl: string;
+  imageAlt: string;
+  stats: AboutStat[];
+  pillars: AboutPillar[];
+  updatedAt: string;
+}
+
+// ── Service ─────────────────────────────────────────────────────────────────
+
+export interface Service {
+  id: number;
+  title: string;
+  description: string;
+  iconName: string;
+  order: number;
+  visible: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Project ─────────────────────────────────────────────────────────────────
+
+export interface Project {
+  id: number;
+  name: string;
+  type: string;
+  services: string;
+  year: string;
+  slug?: string;
+  imageUrl: string;
+  span?: string;
+  order: number;
+  visible: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Process ─────────────────────────────────────────────────────────────────
+
+export interface ProcessStep {
+  id: number;
+  number: string;
+  title: string;
+  description: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Testimonial ─────────────────────────────────────────────────────────────
+
+export interface Testimonial {
+  id: number;
+  text: string;
+  name: string;
+  role: string;
+  imageUrl: string;
+  order: number;
+  visible: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Sustainability ───────────────────────────────────────────────────────────
+
+export interface SustainabilityItem {
+  id: number;
+  title: string;
+  description: string;
+  iconName: string;
+  order: number;
+  sectionId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SustainabilitySection {
+  id: number;
+  headline: string;
+  bodyText: string;
+  imageUrl: string;
+  imageAlt: string;
+  items: SustainabilityItem[];
+  updatedAt: string;
+}
+
+// ── Contact ─────────────────────────────────────────────────────────────────
+
+export interface ContactSection {
+  id: number;
+  headline: string;
+  bodyText: string;
+  cta1Label: string;
+  cta1Email: string;
+  cta2Label: string;
+  cta2Email: string;
+  updatedAt: string;
+}
+
+// ── Footer ──────────────────────────────────────────────────────────────────
+
+export interface FooterColumn {
+  title: string;
+  links: string[];
+}
+
+export interface FooterSection {
+  id: number;
+  brandName: string;
+  tagline: string;
+  columns: FooterColumn[];
+  instagram?: string;
+  linkedin?: string;
+  vimeo?: string;
+  updatedAt: string;
+}
+
+// ── World ───────────────────────────────────────────────────────────────────
+
+export interface WorldImage {
+  id: number;
+  url: string;
+  order: number;
+  worldId: number;
+}
+
+export interface WorldFact {
+  id: number;
+  label: string;
+  value: string;
+  order: number;
+  worldId: number;
+}
+
+export interface WorldCredit {
+  id: number;
+  role: string;
+  name: string;
+  order: number;
+  worldId: number;
+}
+
+export interface WorldProcess {
+  id: number;
+  title: string;
+  body: string;
+  imageUrl: string;
+  order: number;
+  worldId: number;
+}
+
+export interface WorldResult {
+  id: number;
+  value: string;
+  label: string;
+  order: number;
+  worldId: number;
+}
+
+export interface World {
+  id: number;
+  slug: string;
+  title: string;
+  summary: string;
+  role: string;
+  year: string;
+  tags: string[];
+  category: string;
+  heroImage: string;
+  vimeoId: string;
+  intro: string;
+  gallery: WorldImage[];
+  facts: WorldFact[];
+  credits: WorldCredit[];
+  process: WorldProcess[];
+  results: WorldResult[];
+  order: number;
+  visible: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Upload ──────────────────────────────────────────────────────────────────
+
+export interface UploadResult {
+  url: string;
+  publicId: string;
+}
+
+// ── Dashboard ───────────────────────────────────────────────────────────────
+
+export interface DashboardCounts {
+  logos: number;
+  services: number;
+  projects: number;
+  processSteps: number;
+  testimonials: number;
+  worlds: number;
+}
