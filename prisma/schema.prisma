@@ -1,0 +1,238 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Admin Auth ───────────────────────────────────────────────────────────────
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ─── Hero Section (singleton) ─────────────────────────────────────────────────
+
+model HeroSection {
+  id            Int      @id @default(autoincrement())
+  eyebrow       String
+  headline      String
+  rotatingItems String[] // e.g. ["For Film.", "For Television.", "For Brands.", "For Events."]
+  bodyText      String
+  cta1Label     String
+  cta1Href      String
+  cta2Label     String
+  cta2Href      String
+  videoUrl      String?
+  videoPoster   String?
+  trustStats    Json     // [{ value: "20+", label: "Years experience" }, ...]
+  updatedAt     DateTime @updatedAt
+}
+
+// ─── Logos / Client Marquee ───────────────────────────────────────────────────
+
+model Logo {
+  id        Int      @id @default(autoincrement())
+  name      String
+  imageUrl  String?
+  order     Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── About Section (singleton) ────────────────────────────────────────────────
+
+model AboutSection {
+  id        Int      @id @default(autoincrement())
+  headline  String
+  bodyText  String
+  imageUrl  String
+  imageAlt  String
+  stats     Json     // [{ value: "20+", label: "Years" }, ...]
+  pillars   Json     // [{ title: "Scenic Construction", description: "..." }, ...]
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Services ─────────────────────────────────────────────────────────────────
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  iconName    String   // Lucide icon name e.g. "Clapperboard"
+  order       Int      @default(0)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── Projects (portfolio grid) ────────────────────────────────────────────────
+
+model Project {
+  id       Int      @id @default(autoincrement())
+  name     String
+  type     String   // "DC Feature Film", "Brand Activation", etc.
+  services String   // "Sculpting · Standby · Hero build"
+  year     String
+  slug     String?  @unique // set only for projects with a full case study
+  imageUrl String
+  span     String?  // "row-span-2" for tall grid tiles
+  order    Int      @default(0)
+  visible  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Process Steps ────────────────────────────────────────────────────────────
+
+model ProcessStep {
+  id          Int      @id @default(autoincrement())
+  number      String   // "01", "02", "03", "04", "05"
+  title       String
+  description String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  text      String
+  name      String
+  role      String
+  imageUrl  String
+  order     Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Sustainability Section (singleton) ───────────────────────────────────────
+
+model SustainabilitySection {
+  id        Int                  @id @default(autoincrement())
+  headline  String
+  bodyText  String
+  imageUrl  String
+  imageAlt  String
+  items     SustainabilityItem[]
+  updatedAt DateTime             @updatedAt
+}
+
+model SustainabilityItem {
+  id          Int                   @id @default(autoincrement())
+  title       String
+  description String
+  iconName    String                // Lucide icon name e.g. "TreePine"
+  order       Int                   @default(0)
+  sectionId   Int
+  section     SustainabilitySection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+}
+
+// ─── Contact / CTA Section (singleton) ───────────────────────────────────────
+
+model ContactSection {
+  id        Int      @id @default(autoincrement())
+  headline  String
+  bodyText  String
+  cta1Label String
+  cta1Email String
+  cta2Label String
+  cta2Email String
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Footer (singleton) ───────────────────────────────────────────────────────
+
+model FooterSection {
+  id        Int      @id @default(autoincrement())
+  brandName String
+  tagline   String
+  columns   Json     // [{ title: "Studio", links: ["About", "Craft", ...] }, ...]
+  instagram String?
+  linkedin  String?
+  vimeo     String?
+  updatedAt DateTime @updatedAt
+}
+
+// ─── World / Case Study ───────────────────────────────────────────────────────
+
+model World {
+  id        Int            @id @default(autoincrement())
+  slug      String         @unique
+  title     String
+  summary   String
+  role      String
+  year      String
+  tags      String[]
+  category  String
+  heroImage String
+  vimeoId   String
+  intro     String
+  gallery   WorldImage[]
+  facts     WorldFact[]
+  credits   WorldCredit[]
+  process   WorldProcess[]
+  results   WorldResult[]
+  order     Int            @default(0)
+  visible   Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model WorldImage {
+  id      Int    @id @default(autoincrement())
+  worldId Int
+  url     String
+  order   Int    @default(0)
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+}
+
+model WorldFact {
+  id      Int    @id @default(autoincrement())
+  worldId Int
+  label   String
+  value   String
+  order   Int    @default(0)
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+}
+
+model WorldCredit {
+  id      Int    @id @default(autoincrement())
+  worldId Int
+  role    String
+  name    String
+  order   Int    @default(0)
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+}
+
+model WorldProcess {
+  id       Int    @id @default(autoincrement())
+  worldId  Int
+  title    String
+  body     String
+  imageUrl String
+  order    Int    @default(0)
+  world    World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+}
+
+model WorldResult {
+  id      Int    @id @default(autoincrement())
+  worldId Int
+  value   String
+  label   String
+  order   Int    @default(0)
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+}
