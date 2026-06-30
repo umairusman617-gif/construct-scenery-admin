@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Film, Image, Users, Wrench, BookOpen,
-  GitBranch, MessageSquare, Leaf, Phone, AlignLeft, Globe, LogOut,
+  GitBranch, MessageSquare, Leaf, Phone, AlignLeft, Globe, LogOut, GalleryHorizontal,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/media", label: "Media Library", icon: GalleryHorizontal },
   { to: "/hero", label: "Hero Section", icon: Film },
   { to: "/logos", label: "Client Logos", icon: Image },
   { to: "/about", label: "Studio (About)", icon: Users },

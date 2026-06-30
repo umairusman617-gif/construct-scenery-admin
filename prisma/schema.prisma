@@ -236,3 +236,15 @@ model WorldResult {
   order   Int    @default(0)
   world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
 }
+
+// ─── Media Library ────────────────────────────────────────────────────────────
+
+model MediaFile {
+  id        Int      @id @default(autoincrement())
+  url       String
+  publicId  String   @unique
+  filename  String
+  mimeType  String
+  size      Int
+  createdAt DateTime @default(now())
+}

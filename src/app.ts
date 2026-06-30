@@ -17,6 +17,7 @@ import sustainabilityRoutes from "./routes/sustainability.routes";
 import contactRoutes from "./routes/contact.routes";
 import footerRoutes from "./routes/footer.routes";
 import worldsRoutes from "./routes/worlds.routes";
+import mediaRoutes from "./routes/media.routes";
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use("/api/sustainability", sustainabilityRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/footer", footerRoutes);
 app.use("/api/worlds", worldsRoutes);
+app.use("/api/media", mediaRoutes);
 
 app.use(errorHandler);
 

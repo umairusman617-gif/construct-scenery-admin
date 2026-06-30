@@ -258,6 +258,19 @@ export type WorldInput = Omit<Partial<World>, "gallery" | "facts" | "credits" | 
 export interface UploadResult {
   url: string;
   publicId: string;
+  id: number;
+}
+
+// ── Media Library ────────────────────────────────────────────────────────────
+
+export interface MediaFile {
+  id: number;
+  url: string;
+  publicId: string;
+  filename: string;
+  mimeType: string;
+  size: number;
+  createdAt: string;
 }
 
 // ── Dashboard ───────────────────────────────────────────────────────────────

@@ -19,6 +19,7 @@ import { Contact } from "@/pages/Contact";
 import { Footer } from "@/pages/Footer";
 import { Worlds } from "@/pages/Worlds/index";
 import { WorldForm } from "@/pages/Worlds/WorldForm";
+import { MediaLibrary } from "@/pages/MediaLibrary";
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
               <Route path="/worlds" element={<Worlds />} />
               <Route path="/worlds/new" element={<WorldForm />} />
               <Route path="/worlds/:slug/edit" element={<WorldForm />} />
+              <Route path="/media" element={<MediaLibrary />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
           </Routes>

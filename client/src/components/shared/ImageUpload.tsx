@@ -1,10 +1,12 @@
 import { useRef, useState } from "react";
-import { Upload, X } from "lucide-react";
+import { Upload, X, LayoutGrid } from "lucide-react";
 import { toast } from "sonner";
 import { uploadApi } from "@/api/upload";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { MediaPicker } from "./MediaPicker";
 
 interface ImageUploadProps {
   value: string;
@@ -14,13 +16,16 @@ interface ImageUploadProps {
 
 export function ImageUpload({ value, onChange, label = "Image" }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const qc = useQueryClient();
 
   const handleFile = async (file: File) => {
     setUploading(true);
     try {
       const res = await uploadApi.uploadImage(file);
       onChange(res.data.data.url);
+      qc.invalidateQueries({ queryKey: ["media"] });
       toast.success("Image uploaded");
     } catch {
       toast.error("Upload failed");
@@ -36,16 +41,25 @@ export function ImageUpload({ value, onChange, label = "Image" }: ImageUploadPro
         <Input
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="https://... or upload below"
+          placeholder="https://... or use buttons →"
           className="flex-1"
         />
         <Button
           type="button"
           variant="outline"
           size="icon"
+          onClick={() => setPickerOpen(true)}
+          title="Pick from library"
+        >
+          <LayoutGrid className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
           disabled={uploading}
           onClick={() => inputRef.current?.click()}
-          title="Upload image"
+          title="Upload new image"
         >
           <Upload className="h-4 w-4" />
         </Button>
@@ -71,6 +85,11 @@ export function ImageUpload({ value, onChange, label = "Image" }: ImageUploadPro
         />
       )}
       {uploading && <p className="text-xs text-muted-foreground">Uploading…</p>}
+      <MediaPicker
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={onChange}
+      />
     </div>
   );
 }
