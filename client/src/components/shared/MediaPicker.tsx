@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Upload, Check, ImageOff, Loader2 } from "lucide-react";
+import { Upload, Check, ImageOff, Loader2, Film } from "lucide-react";
 import { toast } from "sonner";
 import { mediaApi } from "@/api/media";
 import { uploadApi } from "@/api/upload";
@@ -44,24 +44,32 @@ function LibraryGrid({ onSelect }: { onSelect: (url: string) => void }) {
 
   return (
     <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 max-h-[400px] overflow-y-auto pr-1">
-      {data.map((file: MediaFile) => (
-        <button
-          key={file.id}
-          type="button"
-          className="group relative aspect-square rounded-md overflow-hidden border-2 border-transparent hover:border-primary transition-colors focus:outline-none focus:border-primary"
-          onClick={() => onSelect(file.url)}
-          title={file.filename}
-        >
-          <img
-            src={file.url}
-            alt={file.filename}
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <Check className="h-6 w-6 text-white" />
-          </div>
-        </button>
-      ))}
+      {data.map((file: MediaFile) => {
+        const video = file.mimeType.startsWith("video/");
+        return (
+          <button
+            key={file.id}
+            type="button"
+            className="group relative aspect-square rounded-md overflow-hidden border-2 border-transparent hover:border-primary transition-colors focus:outline-none focus:border-primary"
+            onClick={() => onSelect(file.url)}
+            title={file.filename}
+          >
+            {video ? (
+              <video src={file.url} className="h-full w-full object-cover" muted preload="metadata" />
+            ) : (
+              <img src={file.url} alt={file.filename} className="h-full w-full object-cover" />
+            )}
+            {video && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <Film className="h-6 w-6 text-white drop-shadow-lg opacity-80" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <Check className="h-6 w-6 text-white" />
+            </div>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -104,12 +112,12 @@ function UploadTab({ onSelect }: { onSelect: (url: string) => void }) {
       )}
       <div className="text-center">
         <p className="text-sm font-medium">{uploading ? "Uploading…" : "Drop an image here or click to upload"}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">PNG, JPG, WebP — up to 10 MB</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Images & videos — up to 200 MB</p>
       </div>
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,video/*"
         className="hidden"
         onChange={(e) => handleFiles(e.target.files)}
       />

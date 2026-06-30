@@ -17,7 +17,7 @@ export async function uploadImage(req: Request, res: Response, next: NextFunctio
 
     const result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
       cloudinary.uploader.upload_stream(
-        { folder: "construct-scenery", resource_type: "image" },
+        { folder: "construct-scenery", resource_type: "auto" },
         (err, result) => {
           if (err || !result) return reject(err ?? new Error("Cloudinary upload failed"));
           resolve({ secure_url: result.secure_url, public_id: result.public_id });

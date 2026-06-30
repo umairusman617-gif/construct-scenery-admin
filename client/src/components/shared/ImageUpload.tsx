@@ -72,7 +72,7 @@ export function ImageUpload({ value, onChange, label = "Image" }: ImageUploadPro
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,video/*"
         className="hidden"
         onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
       />

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Upload, Trash2, Copy, Check, ImageOff } from "lucide-react";
+import { Upload, Trash2, Copy, Check, ImageOff, Film } from "lucide-react";
 import { toast } from "sonner";
 import { mediaApi } from "@/api/media";
 import { uploadApi } from "@/api/upload";
@@ -19,9 +19,12 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
+function isVideo(mimeType: string) {
+  return mimeType.startsWith("video/");
+}
+
 function MediaCard({ file, onDelete }: { file: MediaFile; onDelete: (id: number) => void }) {
   const [copied, setCopied] = useState(false);
-  const [imgError, setImgError] = useState(false);
 
   const copyUrl = () => {
     navigator.clipboard.writeText(file.url);
@@ -32,15 +35,25 @@ function MediaCard({ file, onDelete }: { file: MediaFile; onDelete: (id: number)
   return (
     <div className="group relative rounded-lg border bg-card overflow-hidden">
       <div className="aspect-square bg-muted flex items-center justify-center overflow-hidden">
-        {imgError ? (
-          <ImageOff className="h-10 w-10 text-muted-foreground/40" />
+        {isVideo(file.mimeType) ? (
+          <video
+            src={file.url}
+            className="h-full w-full object-cover"
+            muted
+            preload="metadata"
+          />
         ) : (
           <img
             src={file.url}
             alt={file.filename}
             className="h-full w-full object-cover transition-transform group-hover:scale-105"
-            onError={() => setImgError(true)}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
           />
+        )}
+        {isVideo(file.mimeType) && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <Film className="h-8 w-8 text-white drop-shadow-lg opacity-80" />
+          </div>
         )}
       </div>
       <div className="p-2">
@@ -48,24 +61,10 @@ function MediaCard({ file, onDelete }: { file: MediaFile; onDelete: (id: number)
         <p className="text-[10px] text-muted-foreground">{formatBytes(file.size)} · {formatDate(file.createdAt)}</p>
       </div>
       <div className="absolute inset-x-0 top-0 flex justify-end gap-1 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Button
-          type="button"
-          size="icon"
-          variant="secondary"
-          className="h-7 w-7"
-          onClick={copyUrl}
-          title="Copy URL"
-        >
+        <Button type="button" size="icon" variant="secondary" className="h-7 w-7" onClick={copyUrl} title="Copy URL">
           {copied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
         </Button>
-        <Button
-          type="button"
-          size="icon"
-          variant="destructive"
-          className="h-7 w-7"
-          onClick={() => onDelete(file.id)}
-          title="Delete"
-        >
+        <Button type="button" size="icon" variant="destructive" className="h-7 w-7" onClick={() => onDelete(file.id)} title="Delete">
           <Trash2 className="h-3.5 w-3.5" />
         </Button>
       </div>
@@ -88,7 +87,7 @@ export function MediaLibrary() {
     mutationFn: (id: number) => mediaApi.delete(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["media"] });
-      toast.success("Image deleted");
+      toast.success("File deleted");
     },
     onError: () => toast.error("Delete failed"),
   });
@@ -108,7 +107,7 @@ export function MediaLibrary() {
     setUploading(false);
     if (succeeded > 0) {
       qc.invalidateQueries({ queryKey: ["media"] });
-      toast.success(`${succeeded} image${succeeded > 1 ? "s" : ""} uploaded`);
+      toast.success(`${succeeded} file${succeeded > 1 ? "s" : ""} uploaded`);
     }
   };
 
@@ -118,11 +117,13 @@ export function MediaLibrary() {
     handleFiles(e.dataTransfer.files);
   };
 
+  const total = data?.length ?? 0;
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Media Library"
-        description="All uploaded images in one place. Upload here or directly from any image field."
+        description="All uploaded images and videos in one place. Upload here or directly from any media field."
       />
 
       {/* Upload zone */}
@@ -137,13 +138,13 @@ export function MediaLibrary() {
       >
         <Upload className="h-8 w-8 text-muted-foreground" />
         <div className="text-center">
-          <p className="text-sm font-medium">{uploading ? "Uploading…" : "Drop images here or click to upload"}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">PNG, JPG, WebP — up to 10 MB each</p>
+          <p className="text-sm font-medium">{uploading ? "Uploading…" : "Drop files here or click to upload"}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Images & videos — up to 200 MB each</p>
         </div>
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,video/*"
           multiple
           className="hidden"
           onChange={(e) => handleFiles(e.target.files)}
@@ -157,21 +158,17 @@ export function MediaLibrary() {
             <Skeleton key={i} className="aspect-square rounded-lg" />
           ))}
         </div>
-      ) : !data || data.length === 0 ? (
+      ) : total === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
           <ImageOff className="h-12 w-12 opacity-30" />
-          <p className="text-sm">No images yet — upload one above</p>
+          <p className="text-sm">No files yet — upload one above</p>
         </div>
       ) : (
         <>
-          <p className="text-sm text-muted-foreground">{data.length} image{data.length !== 1 ? "s" : ""}</p>
+          <p className="text-sm text-muted-foreground">{total} file{total !== 1 ? "s" : ""}</p>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {data.map((file) => (
-              <MediaCard
-                key={file.id}
-                file={file}
-                onDelete={(id) => deleteMutation.mutate(id)}
-              />
+            {data!.map((file) => (
+              <MediaCard key={file.id} file={file} onDelete={(id) => deleteMutation.mutate(id)} />
             ))}
           </div>
         </>
