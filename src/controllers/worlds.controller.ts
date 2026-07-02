@@ -1,6 +1,30 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../lib/prisma";
 
+async function syncProject(slug: string, world: {
+  title: string; category: string; role: string; year: string; heroImage: string;
+}) {
+  await prisma.project.upsert({
+    where: { slug },
+    update: {
+      name: world.title,
+      type: world.category,
+      services: world.role,
+      year: world.year,
+      imageUrl: world.heroImage,
+    },
+    create: {
+      slug,
+      name: world.title,
+      type: world.category,
+      services: world.role,
+      year: world.year,
+      imageUrl: world.heroImage,
+      visible: false,
+    },
+  });
+}
+
 const worldInclude = {
   gallery: { orderBy: { order: "asc" as const } },
   facts: { orderBy: { order: "asc" as const } },
@@ -55,6 +79,7 @@ export async function createWorld(req: Request, res: Response, next: NextFunctio
       include: worldInclude,
     });
 
+    await syncProject(world.slug, world);
     res.status(201).json({ success: true, data: world, message: "World created" });
   } catch (err) {
     next(err);
@@ -107,6 +132,10 @@ export async function updateWorld(req: Request, res: Response, next: NextFunctio
       include: worldInclude,
     });
 
+    if (updated) {
+      await syncProject(updated.slug, updated);
+    }
+
     res.json({ success: true, data: updated, message: "World updated" });
   } catch (err) {
     next(err);
@@ -121,6 +150,7 @@ export async function deleteWorld(req: Request, res: Response, next: NextFunctio
       return;
     }
 
+    await prisma.project.deleteMany({ where: { slug: String(req.params.slug) } });
     await prisma.world.delete({ where: { slug: String(req.params.slug) } });
     res.json({ success: true, data: null, message: "World deleted" });
   } catch (err) {

@@ -33,15 +33,18 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
+    <aside className="flex h-full w-64 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
       {/* Brand */}
-      <div className="flex h-16 items-center border-b border-sidebar-border px-6">
-        <span className="font-semibold tracking-tight">
-          Construct<span className="text-sidebar-accent-foreground opacity-60">/</span>Scenery
-        </span>
-        <span className="ml-2 rounded bg-sidebar-accent px-1.5 py-0.5 text-[10px] font-medium text-sidebar-accent-foreground">
-          ADMIN
-        </span>
+      <div className="flex h-16 items-center border-b border-sidebar-border px-4 gap-3">
+        <img src="/logo.jpg" alt="Construct Scenery" className="h-9 w-9 rounded-full object-cover invert shrink-0" />
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="font-semibold tracking-tight truncate">
+            Construct Scenery
+          </span>
+          <span className="shrink-0 rounded bg-sidebar-accent px-1.5 py-0.5 text-[10px] font-medium text-sidebar-accent-foreground">
+            ADMIN
+          </span>
+        </div>
       </div>
 
       {/* Nav */}

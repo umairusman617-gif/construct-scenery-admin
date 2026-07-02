@@ -88,7 +88,7 @@ export function Projects() {
     onError: (e) => toast.error(getErrorMessage(e)),
   });
   const updateMut = useMutation({ mutationFn: ({ id, data }: { id: number; data: Partial<Project> }) => projectsApi.update(id, data), onSuccess: () => { inv(); setEditItem(null); toast.success("Project updated"); }, onError: (e) => toast.error(getErrorMessage(e)) });
-  const deleteMut = useMutation({ mutationFn: projectsApi.delete, onSuccess: () => { inv(); setDeleteId(null); toast.success("Project deleted"); }, onError: (e) => toast.error(getErrorMessage(e)) });
+  const deleteMut = useMutation({ mutationFn: projectsApi.delete, onSuccess: () => { inv(); qc.invalidateQueries({ queryKey: ["worlds"] }); setDeleteId(null); toast.success("Project deleted"); }, onError: (e) => toast.error(getErrorMessage(e)) });
 
   return (
     <div>
@@ -123,7 +123,18 @@ export function Projects() {
       )}
       <Dialog open={addOpen} onOpenChange={setAddOpen}><DialogContent className="max-w-2xl"><DialogHeader><DialogTitle>Add Project</DialogTitle></DialogHeader><ProjectForm onSubmit={(d) => createMut.mutate(d)} loading={createMut.isPending} /></DialogContent></Dialog>
       <Dialog open={!!editItem} onOpenChange={(o) => !o && setEditItem(null)}><DialogContent className="max-w-2xl"><DialogHeader><DialogTitle>Edit Project</DialogTitle></DialogHeader>{editItem && <ProjectForm defaultValues={{ ...editItem, imageUrl: editItem.imageUrl }} onSubmit={(d) => updateMut.mutate({ id: editItem.id, data: d })} loading={updateMut.isPending} />}</DialogContent></Dialog>
-      <ConfirmDialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)} onConfirm={() => deleteId !== null && deleteMut.mutate(deleteId)} loading={deleteMut.isPending} />
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        onConfirm={() => deleteId !== null && deleteMut.mutate(deleteId)}
+        loading={deleteMut.isPending}
+        description={(() => {
+          const p = data?.find((x) => x.id === deleteId);
+          return p?.slug
+            ? `This will permanently delete the project and its linked "${p.slug}" world case study.`
+            : "This will permanently delete the project.";
+        })()}
+      />
     </div>
   );
 }

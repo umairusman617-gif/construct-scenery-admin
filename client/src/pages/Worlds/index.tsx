@@ -20,7 +20,7 @@ export function Worlds() {
 
   const deleteMut = useMutation({
     mutationFn: (slug: string) => worldsApi.delete(slug),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["worlds"] }); setDeleteSlug(null); toast.success("World deleted"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["worlds"] }); qc.invalidateQueries({ queryKey: ["projects"] }); setDeleteSlug(null); toast.success("World deleted"); },
     onError: (e) => toast.error(getErrorMessage(e)),
   });
 
@@ -89,7 +89,7 @@ export function Worlds() {
         open={deleteSlug !== null}
         onOpenChange={(o) => !o && setDeleteSlug(null)}
         title="Delete world?"
-        description={`This will permanently delete "${deleteSlug}" and all its gallery, facts, credits, process steps, and results.`}
+        description={`This will permanently delete the "${deleteSlug}" world and its linked project card from the portfolio grid.`}
         onConfirm={() => deleteSlug && deleteMut.mutate(deleteSlug)}
         loading={deleteMut.isPending}
       />

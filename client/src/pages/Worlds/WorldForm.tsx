@@ -81,13 +81,13 @@ export function WorldForm() {
 
   const createMut = useMutation({
     mutationFn: (values: FormData) => worldsApi.create({ ...values, tags: values.tags.split(",").map((t) => t.trim()).filter(Boolean) }),
-    onSuccess: (res) => { qc.invalidateQueries({ queryKey: ["worlds"] }); toast.success("World created"); navigate(`/worlds/${res.data.data.slug}/edit`); },
+    onSuccess: (res) => { qc.invalidateQueries({ queryKey: ["worlds"] }); qc.invalidateQueries({ queryKey: ["projects"] }); toast.success("World created — linked project card added to portfolio"); navigate(`/worlds/${res.data.data.slug}/edit`); },
     onError: (e) => toast.error(getErrorMessage(e)),
   });
 
   const updateMut = useMutation({
     mutationFn: (values: FormData) => worldsApi.update(slug!, { ...values, tags: values.tags.split(",").map((t) => t.trim()).filter(Boolean) }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["worlds"] }); qc.invalidateQueries({ queryKey: ["world", slug] }); toast.success("World saved"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["worlds"] }); qc.invalidateQueries({ queryKey: ["world", slug] }); qc.invalidateQueries({ queryKey: ["projects"] }); toast.success("World saved"); },
     onError: (e) => toast.error(getErrorMessage(e)),
   });
 

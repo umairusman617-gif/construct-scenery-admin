@@ -8,7 +8,7 @@ export function AppLayout() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-background">
+      <div className="flex h-full items-center justify-center bg-background">
         <div className="space-y-3">
           <Skeleton className="h-4 w-48" />
           <Skeleton className="h-4 w-32" />
@@ -20,7 +20,7 @@ export function AppLayout() {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-full overflow-hidden bg-background">
       <Sidebar />
       <main className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-6xl p-8">
