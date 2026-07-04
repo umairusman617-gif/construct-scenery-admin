@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FormField } from "@/components/shared/FormField";
 import { ImageUpload } from "@/components/shared/ImageUpload";
@@ -29,6 +31,9 @@ const schema = z.object({
   videoUrl: z.string().optional(),
   videoPoster: z.string().optional(),
   trustStats: z.array(z.object({ value: z.string(), label: z.string() })),
+  logoVisible: z.boolean(),
+  logoOpacity: z.number().min(0).max(1),
+  logoHeight: z.number().min(80).max(600),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -41,7 +46,7 @@ export function Hero() {
 
   const { register, handleSubmit, reset, control, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { trustStats: [{ value: "", label: "" }] },
+    defaultValues: { trustStats: [{ value: "", label: "" }], logoVisible: true, logoOpacity: 1, logoHeight: 280 },
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "trustStats" });
@@ -52,6 +57,9 @@ export function Hero() {
         ...data,
         rotatingItems: data.rotatingItems?.join(", ") ?? "",
         trustStats: data.trustStats ?? [],
+        logoVisible: data.logoVisible ?? true,
+        logoOpacity: data.logoOpacity ?? 1,
+        logoHeight: data.logoHeight ?? 280,
       });
     }
   }, [data, reset]);
@@ -103,6 +111,52 @@ export function Hero() {
               <Input {...register("videoUrl")} placeholder="/videos/hero-set.mp4" />
             </FormField>
             <ImageUpload label="Video Poster / Fallback Image" value={watch("videoPoster") ?? ""} onChange={(url) => setValue("videoPoster", url)} />
+
+            <Separator />
+            <div>
+              <div className="mb-3 flex items-center justify-between">
+                <label className="text-sm font-medium">Hero Logo</label>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">{watch("logoVisible") ? "Visible" : "Hidden"}</span>
+                  <Switch checked={watch("logoVisible")} onCheckedChange={(checked) => setValue("logoVisible", checked)} />
+                </div>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2">
+                <FormField label={`Opacity — ${Math.round((watch("logoOpacity") ?? 1) * 100)}%`}>
+                  <Slider
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={[watch("logoOpacity") ?? 1]}
+                    onValueChange={([v]) => setValue("logoOpacity", v)}
+                  />
+                </FormField>
+                <FormField label={`Height — ${watch("logoHeight") ?? 280}px`}>
+                  <Slider
+                    min={80}
+                    max={600}
+                    step={4}
+                    value={[watch("logoHeight") ?? 280]}
+                    onValueChange={([v]) => setValue("logoHeight", v)}
+                  />
+                </FormField>
+              </div>
+              <div className="mt-4 flex h-40 items-center justify-center rounded-md border border-dashed bg-muted/30">
+                {watch("logoVisible") ? (
+                  <img
+                    src="/construct-logo-transparent.png"
+                    alt="Logo preview"
+                    className="object-contain"
+                    style={{
+                      height: `min(${watch("logoHeight") ?? 280}px, 140px)`,
+                      opacity: watch("logoOpacity") ?? 1,
+                    }}
+                  />
+                ) : (
+                  <span className="text-sm text-muted-foreground">Logo hidden</span>
+                )}
+              </div>
+            </div>
 
             <Separator />
             <div>
