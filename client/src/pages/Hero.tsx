@@ -62,6 +62,9 @@ export function Hero() {
         ...data,
         rotatingItems: data.rotatingItems?.join(", ") ?? "",
         trustStats: data.trustStats ?? [],
+        logoVisible: data.logoVisible ?? true,
+        logoOpacity: data.logoOpacity ?? 1,
+        logoHeight: data.logoHeight ?? 280,
       });
     }
   }, [data, reset]);
