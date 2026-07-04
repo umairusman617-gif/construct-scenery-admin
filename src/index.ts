@@ -8,7 +8,7 @@ async function main() {
   console.log("✓ Database connected");
 
   app.listen(PORT, () => {
-    console.log(`✓ Server running on http://localhost:${PORT}`);
+    console.log(`✓ Server running on http://localhost:${PORT} (deploy-test ${new Date().toISOString()})`);
   });
 }
 
