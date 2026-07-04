@@ -30,9 +30,6 @@ export interface HeroSection {
   videoUrl?: string;
   videoPoster?: string;
   trustStats: TrustStat[];
-  logoVisible: boolean;
-  logoOpacity: number;
-  logoHeight: number;
   updatedAt: string;
 }
 

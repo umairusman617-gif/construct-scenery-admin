@@ -16,8 +16,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { FormField } from "@/components/shared/FormField";
 import { ImageUpload } from "@/components/shared/ImageUpload";
-import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
 
 const schema = z.object({
   eyebrow: z.string().min(1),
@@ -31,9 +29,6 @@ const schema = z.object({
   videoUrl: z.string().optional(),
   videoPoster: z.string().optional(),
   trustStats: z.array(z.object({ value: z.string(), label: z.string() })),
-  logoVisible: z.boolean(),
-  logoOpacity: z.number().min(0).max(1),
-  logoHeight: z.number().min(80).max(600),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -46,12 +41,7 @@ export function Hero() {
 
   const { register, handleSubmit, reset, control, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      trustStats: [{ value: "", label: "" }],
-      logoVisible: true,
-      logoOpacity: 1,
-      logoHeight: 280,
-    },
+    defaultValues: { trustStats: [{ value: "", label: "" }] },
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "trustStats" });
@@ -62,9 +52,6 @@ export function Hero() {
         ...data,
         rotatingItems: data.rotatingItems?.join(", ") ?? "",
         trustStats: data.trustStats ?? [],
-        logoVisible: data.logoVisible ?? true,
-        logoOpacity: data.logoOpacity ?? 1,
-        logoHeight: data.logoHeight ?? 280,
       });
     }
   }, [data, reset]);
@@ -135,69 +122,6 @@ export function Hero() {
                     </Button>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            <Separator />
-            <div>
-              <div className="mb-3 flex items-center justify-between">
-                <label className="text-sm font-medium">Logo (right side of hero)</label>
-                <Switch
-                  checked={watch("logoVisible")}
-                  onCheckedChange={(checked) => setValue("logoVisible", checked)}
-                />
-              </div>
-
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div className="space-y-5">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>Opacity</span>
-                      <span className="tabular-nums font-medium text-foreground">
-                        {Math.round(watch("logoOpacity") * 100)}%
-                      </span>
-                    </div>
-                    <Slider
-                      value={[watch("logoOpacity") * 100]}
-                      min={0}
-                      max={100}
-                      step={1}
-                      onValueChange={([v]) => setValue("logoOpacity", v / 100)}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>Height</span>
-                      <span className="tabular-nums font-medium text-foreground">
-                        {watch("logoHeight")}px
-                      </span>
-                    </div>
-                    <Slider
-                      value={[watch("logoHeight")]}
-                      min={80}
-                      max={600}
-                      step={10}
-                      onValueChange={([v]) => setValue("logoHeight", v)}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-center rounded-md border bg-black p-4 min-h-[200px]">
-                  {watch("logoVisible") ? (
-                    <img
-                      src="/construct-logo-transparent.png"
-                      alt="Logo preview"
-                      style={{
-                        height: `${Math.min(watch("logoHeight"), 160)}px`,
-                        opacity: watch("logoOpacity"),
-                      }}
-                      className="w-auto object-contain"
-                    />
-                  ) : (
-                    <span className="text-xs text-muted-foreground">Logo hidden</span>
-                  )}
-                </div>
               </div>
             </div>
           </CardContent>
