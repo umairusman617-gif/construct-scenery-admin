@@ -33,6 +33,9 @@ model HeroSection {
   videoUrl      String?
   videoPoster   String?
   trustStats    Json     // [{ value: "20+", label: "Years experience" }, ...]
+  logoVisible   Boolean  @default(true)
+  logoOpacity   Float    @default(1)
+  logoHeight    Int      @default(280)
   updatedAt     DateTime @updatedAt
 }
 

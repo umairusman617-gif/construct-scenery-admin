@@ -17,4 +17,7 @@ export const heroSchema = z.object({
   videoUrl: z.string().optional(),
   videoPoster: z.string().optional(),
   trustStats: z.array(trustStatSchema).min(1),
+  logoVisible: z.boolean().optional(),
+  logoOpacity: z.number().min(0).max(1).optional(),
+  logoHeight: z.number().min(80).max(600).optional(),
 });
