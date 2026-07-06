@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard, Film, Image, Users, Wrench, BookOpen,
+  LayoutDashboard, Film, Image, Users, BookOpen,
   GitBranch, MessageSquare, Leaf, Phone, AlignLeft, Globe, LogOut, GalleryHorizontal,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -13,7 +13,6 @@ const navItems = [
   { to: "/hero", label: "Hero Section", icon: Film },
   { to: "/logos", label: "Client Logos", icon: Image },
   { to: "/about", label: "Studio (About)", icon: Users },
-  { to: "/services", label: "Services", icon: Wrench },
   { to: "/projects", label: "Projects", icon: BookOpen },
   { to: "/process", label: "Process Steps", icon: GitBranch },
   { to: "/testimonials", label: "Testimonials", icon: MessageSquare },

@@ -10,7 +10,6 @@ import { Dashboard } from "@/pages/Dashboard";
 import { Hero } from "@/pages/Hero";
 import { Logos } from "@/pages/Logos";
 import { About } from "@/pages/About";
-import { Services } from "@/pages/Services";
 import { Projects } from "@/pages/Projects";
 import { Process } from "@/pages/Process";
 import { Testimonials } from "@/pages/Testimonials";
@@ -34,7 +33,6 @@ export default function App() {
               <Route path="/hero" element={<Hero />} />
               <Route path="/logos" element={<Logos />} />
               <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/process" element={<Process />} />
               <Route path="/testimonials" element={<Testimonials />} />

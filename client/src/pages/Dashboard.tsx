@@ -1,8 +1,7 @@
 import { useQueries } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Film, Image, Users, Wrench, BookOpen, GitBranch, MessageSquare, Globe, Leaf, Phone, AlignLeft } from "lucide-react";
+import { Film, Image, Users, BookOpen, GitBranch, MessageSquare, Globe, Leaf, Phone, AlignLeft } from "lucide-react";
 import { logosApi } from "@/api/logos";
-import { servicesApi } from "@/api/services";
 import { projectsApi } from "@/api/projects";
 import { processApi } from "@/api/process";
 import { testimonialsApi } from "@/api/testimonials";
@@ -23,7 +22,6 @@ export function Dashboard() {
   const results = useQueries({
     queries: [
       { queryKey: ["logos"], queryFn: () => logosApi.list().then((r) => r.data.data) },
-      { queryKey: ["services"], queryFn: () => servicesApi.list().then((r) => r.data.data) },
       { queryKey: ["projects"], queryFn: () => projectsApi.list().then((r) => r.data.data) },
       { queryKey: ["process"], queryFn: () => processApi.list().then((r) => r.data.data) },
       { queryKey: ["testimonials"], queryFn: () => testimonialsApi.list().then((r) => r.data.data) },
@@ -31,11 +29,10 @@ export function Dashboard() {
     ],
   });
 
-  const [logos, services, projects, process, testimonials, worlds] = results;
+  const [logos, projects, process, testimonials, worlds] = results;
 
   const listCards = [
     { label: "Client Logos", icon: Image, to: "/logos", count: logos.data?.length, loading: logos.isLoading },
-    { label: "Services", icon: Wrench, to: "/services", count: services.data?.length, loading: services.isLoading },
     { label: "Projects", icon: BookOpen, to: "/projects", count: projects.data?.length, loading: projects.isLoading },
     { label: "Process Steps", icon: GitBranch, to: "/process", count: process.data?.length, loading: process.isLoading },
     { label: "Testimonials", icon: MessageSquare, to: "/testimonials", count: testimonials.data?.length, loading: testimonials.isLoading },
